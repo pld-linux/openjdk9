@@ -1,8 +1,10 @@
 #
 # TODO:
+#	- use the release snapshots (the jdk8u repo?) instead of latest 'b' tag
 #	- make it build
 # 	- make it install
 # 	- fix BuildRequires
+#	- fix build with system giflib
 #	
 
 %bcond_with bootstrap   # build a bootstrap version, using icedtea6
@@ -42,6 +44,8 @@ Source6:	openjdk8-langtools-b%{minor}.tar.bz2
 Source7:	openjdk8-nashorn-b%{minor}.tar.bz2
 # Source7-md5:	19581a68b0ffa30d8a23f384fcb8c91d
 Source10:	make-cacerts.sh
+Patch0:		adjust-mflags.patch
+Patch1:		format_strings.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	alsa-lib-devel
 BuildRequires:	ant
@@ -53,25 +57,13 @@ BuildRequires:	cups-devel
 BuildRequires:	/usr/bin/jar
 BuildRequires:	freetype-devel >= 2.3
 BuildRequires:	gawk
-BuildRequires:	giflib-devel >= 5.1
-BuildRequires:	glib2-devel
+#BuildRequires:	giflib-devel >= 5.1
 BuildRequires:	glibc-misc
-BuildRequires:	gtk+2-devel
-BuildRequires:	heimdal-devel
-BuildRequires:	java-rhino
-BuildRequires:	java-xalan
 %buildrequires_jdk
-BuildRequires:	lcms2-devel
-BuildRequires:	libffi-devel
 BuildRequires:	libjpeg-devel
-BuildRequires:	pcsc-lite-devel
-BuildRequires:	libpng-devel
-BuildRequires:	libsctp-devel
-BuildRequires:	libstdc++-static
 BuildRequires:	lsb-release
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.557
-BuildRequires:	systemtap-sdt-devel
 BuildRequires:	unzip
 BuildRequires:	util-linux
 BuildRequires:	xorg-lib-libX11-devel
@@ -409,6 +401,9 @@ for d in *-jdk8-b* ; do
 	ln -s "$d" "${d%%-jdk8-b*}"
 done
 
+%patch0 -p1
+%patch1 -p1
+
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
 if [ ! -f /proc/self/stat ]; then
@@ -417,11 +412,28 @@ if [ ! -f /proc/self/stat ]; then
 fi
 
 unset JAVA_HOME
+export SHELL=/bin/bash
 
 mkdir -p build-bin
 export PATH="$(pwd)/build-bin:$PATH"
 
-%{__make}
+chmod a+x configure
+
+%configure \
+	--with-extra-cflags="%{rpmcflags}" \
+	--with-extra-cxxflags="%{rpmcxxflags}" \
+	--with-extra-ldflags="%{rpmldflags}" \
+	--with-giflib=bundled \
+	--with-zlib=system
+
+specdir="$(dirname build/*-release/spec.gmk)"
+cat > $specdir/custom-spec.gmk <<EOF
+SHELL=/bin/bash
+EOF
+[ -d tmp-bin ] || ln -s "$specdir/jdk/bin" tmp-bin
+
+%{__make} \
+	LOG=debug
 
 %{?with_cacerts:%{__sh} %{SOURCE10}}
 

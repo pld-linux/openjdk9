@@ -49,7 +49,9 @@ CERTBUNDLE=$DESTDIR/etc/certs/ca-certificates.crt
 ETCCERTSDIR=$DESTDIR/etc/openssl/certs
 
 KEYSTORE=$PWD/cacerts
-KEYTOOL=$PWD/openjdk.build/bin/keytool
+KEYTOOL=$PWD/tmp-bin/keytool
+
+export LC_ALL=C.utf-8
 
 # Adds a certificate to the list of trusted ones.
 # Adds the certificate to the cacerts file
