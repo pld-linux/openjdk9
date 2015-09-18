@@ -40,6 +40,7 @@ Source2:	openjdk8-hotspot-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 Source3:	openjdk8-jaxp-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source3-md5:	6bd5ae187272a209439d1a95ac6c9025
 Source4:	openjdk8-jaxws-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+# Source4-md5:	15e6a93009bdc73194e7118988d5ab8d
 Source5:	openjdk8-jdk-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source5-md5:	74f2cf3815659b83993c4187e7fc4f6b
 Source6:	openjdk8-langtools-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
