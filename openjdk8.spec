@@ -1,6 +1,5 @@
 #
 # TODO:
-#	- use the release snapshots (the jdk8u repo?) instead of latest 'b' tag
 #	- make it build
 # 	- make it install
 # 	- fix BuildRequires
@@ -18,30 +17,33 @@
 
 # class data version seen with file(1) that this jvm is able to load
 %define		_classdataversion 51.0
+# JDK/JRE version, as returned with `java -version`, '_' replaced with '.'
+%define		_jdkversion 1.7.0.85
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
 Name:		openjdk8
-%define	minor	132
-Version:	1.8.0.%{minor}
+%define	ver_u	66
+%define	ver_b	02
+Version:	8u%{ver_u}.b%{ver_b}
 Release:	0.1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	openjdk8-b%{minor}.tar.bz2
+Source0:	openjdk8-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source0-md5:	7ae143bc2b840f1bfbfa15a1dcbcc371
-Source1:	openjdk8-corba-b%{minor}.tar.bz2
+Source1:	openjdk8-corba-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source1-md5:	a54c4b046d4f9b7dc0e64b79b734d2f3
-Source2:	openjdk8-hotspot-b%{minor}.tar.bz2
+Source2:	openjdk8-hotspot-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source2-md5:	1368abb3e02079bb7cd802d2bef136b4
-Source3:	openjdk8-jaxp-b%{minor}.tar.bz2
+Source3:	openjdk8-jaxp-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source3-md5:	dccca275bad921fc036221ba36f9596e
-Source4:	openjdk8-jaxws-b%{minor}.tar.bz2
+Source4:	openjdk8-jaxws-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source5-md5:	faf2d077d9c41a8c11a2b038fb5d2e50
-Source5:	openjdk8-jdk-b%{minor}.tar.bz2
+Source5:	openjdk8-jdk-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source5-md5:	a14e4f9a26a229fdc59dc77cf9754fee
-Source6:	openjdk8-langtools-b%{minor}.tar.bz2
+Source6:	openjdk8-langtools-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source6-md5:	6f6dd27e4ca48a49c0c2ec16310c44f3
-Source7:	openjdk8-nashorn-b%{minor}.tar.bz2
+Source7:	openjdk8-nashorn-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source7-md5:	19581a68b0ffa30d8a23f384fcb8c91d
 Source10:	make-cacerts.sh
 Patch0:		adjust-mflags.patch
@@ -144,8 +146,8 @@ Group:		Development/Languages/Java
 Requires:	%{name}-jar = %{version}-%{release}
 Requires:	%{name}-jdk-base = %{version}-%{release}
 Requires:	%{name}-jre = %{version}-%{release}
-Provides:	j2sdk = %{_version}
-Provides:	jdk = %{_version}
+Provides:	j2sdk = %{_jdkversion}
+Provides:	jdk = %{_jdkversion}
 Obsoletes:	blackdown-java-sdk
 Obsoletes:	ibm-java
 Obsoletes:	icedtea6-jdk
@@ -204,7 +206,7 @@ Provides:	java(jmx) = 1.4
 Provides:	java(jndi) = %{version}
 Provides:	java(jsse) = %{version}
 Provides:	java1.4
-Provides:	jre = %{_version}
+Provides:	jre = %{_jdkversion}
 Obsoletes:	icedtea6-jre
 Obsoletes:	icedtea7-jre
 Obsoletes:	java(jaas)
@@ -239,7 +241,7 @@ Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa X11
 Group:		Development/Languages/Java
 Requires:	%{name}-jre = %{version}-%{release}
 Requires:	%{name}-jre-base-X11 = %{version}-%{release}
-Provides:	jre-X11 = %{_version}
+Provides:	jre-X11 = %{_jdkversion}
 Obsoletes:	icedtea6-jre-X11
 Obsoletes:	icedtea7-jre-X11
 Obsoletes:	java-sun-jre-X11
@@ -395,10 +397,10 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk8-jdk8-b%{minor} -a1 -a2 -a3 -a4 -a5 -a6 -a7
+%setup -qn jdk8u-jdk8u%{ver_u}-b%{ver_b} -a1 -a2 -a3 -a4 -a5 -a6 -a7
 
-for d in *-jdk8-b* ; do
-	ln -s "$d" "${d%%-jdk8-b*}"
+for d in *-jdk8u*-b* ; do
+	ln -s "$d" "${d%%-jdk8u*-b*}"
 done
 
 %patch0 -p1
