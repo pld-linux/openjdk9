@@ -434,8 +434,14 @@ cd common/autoconf
 cd ../..
 
 mkdir -p build-bin
+
+# use the specified %%use_jdk
 export JAVA_HOME=%{java_home}
 export PATH="$JAVA_HOME/bin:$PATH"
+
+# unset CLASSPATH to be safe, gnustep puts garbage there, which openjdk hates
+unset CLASSPATH
+
 export SHELL=/bin/bash
 
 chmod a+x configure
