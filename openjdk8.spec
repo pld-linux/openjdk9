@@ -50,6 +50,7 @@ Source10:	make-cacerts.sh
 Patch0:		adjust-mflags.patch
 Patch1:		format_strings.patch
 Patch2:		CompileDemos.patch
+Patch3:		libpath.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	alsa-lib-devel
 BuildRequires:	ant
@@ -408,6 +409,7 @@ done
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.

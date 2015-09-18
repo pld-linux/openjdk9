@@ -1,0 +1,15 @@
+diff -dur -x '*~' -x '*.orig' -x '*.rej' jdk8u-jdk8u66-b02.orig/hotspot/src/os/linux/vm/os_linux.cpp jdk8u-jdk8u66-b02/hotspot/src/os/linux/vm/os_linux.cpp
+--- jdk8u-jdk8u66-b02.orig/hotspot/src/os/linux/vm/os_linux.cpp	2015-07-22 19:12:56.000000000 +0200
++++ jdk8u-jdk8u66-b02/hotspot/src/os/linux/vm/os_linux.cpp	2015-09-18 12:54:54.000000000 +0200
+@@ -309,9 +309,9 @@
+ //        ...
+ //        7: The default directories, normally /lib and /usr/lib.
+ #if defined(AMD64) || defined(_LP64) && (defined(SPARC) || defined(PPC) || defined(S390))
+-#define DEFAULT_LIBPATH "/usr/lib64:/lib64:/lib:/usr/lib"
++#define DEFAULT_LIBPATH "/usr/lib64/java:/usr/lib64:/lib64:/lib:/usr/lib"
+ #else
+-#define DEFAULT_LIBPATH "/lib:/usr/lib"
++#define DEFAULT_LIBPATH "/usr/lib/java:/lib:/usr/lib"
+ #endif
+ 
+ // Base path of extensions installed on the system.
