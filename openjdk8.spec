@@ -1,10 +1,12 @@
 #
 # TODO:
-#	- make it build
-# 	- make it install
 # 	- fix BuildRequires
 #	- fix build with system giflib
-#	
+#	- use other system libs (libjpeg, liblcms, libsctp)
+#	- build alternative VM for x32
+#	- include icedtea-sound?
+#	- port PLD-specific changes from icedtea7?
+#	- '*** WARNING: no sources found for ...'
 
 %bcond_with bootstrap   # build a bootstrap version, using icedtea6
 %bcond_without cacerts	# don't include the default CA certificates
@@ -47,6 +49,7 @@ Source7:	openjdk8-nashorn-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 Source10:	make-cacerts.sh
 Patch0:		adjust-mflags.patch
 Patch1:		format_strings.patch
+Patch2:		CompileDemos.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	alsa-lib-devel
 BuildRequires:	ant
@@ -399,11 +402,12 @@ Przykłady dla OpenJDK.
 %setup -qn jdk8u-jdk8u%{ver_u}-b%{ver_b} -a1 -a2 -a3 -a4 -a5 -a6 -a7
 
 for d in *-jdk8u*-b* ; do
-	ln -s "$d" "${d%%-jdk8u*-b*}"
+	mv "$d" "${d%%-jdk8u*-b*}"
 done
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
@@ -412,11 +416,10 @@ if [ ! -f /proc/self/stat ]; then
 	exit 1
 fi
 
-unset JAVA_HOME
-export SHELL=/bin/bash
-
 mkdir -p build-bin
-export PATH="$(pwd)/build-bin:$PATH"
+export JAVA_HOME=%{java_home}
+export PATH="$JAVA_HOME/bin:$PATH"
+export SHELL=/bin/bash
 
 chmod a+x configure
 
@@ -433,9 +436,10 @@ SHELL=/bin/bash
 EOF
 [ -d tmp-bin ] || ln -s "$specdir/jdk/bin" tmp-bin
 
-%{__make} \
+%{__make} all \
 	LOG=debug
 
+export PATH="$(pwd)/build-bin:$PATH"
 %{?with_cacerts:%{__sh} %{SOURCE10}}
 
 %install
@@ -445,7 +449,7 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{dstdir},%{_mandir}/ja} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 
 # install the 'JDK image', it contains the JRE too
-cp -a openjdk.build/j2sdk-image/* $RPM_BUILD_ROOT%{dstdir}
+cp -a build/*-release/images/j2sdk-image/* $RPM_BUILD_ROOT%{dstdir}
 
 # convenience symlinks without version number
 ln -s %{dstreldir} $RPM_BUILD_ROOT%{_jvmdir}/%{name}
@@ -498,9 +502,6 @@ done
 # some apps (like opera) looks for it in different place
 ln -s server/libjvm.so $RPM_BUILD_ROOT%{jredir}/lib/%{jre_arch}/libjvm.so
 
-# uses /usr/share/javazi if present and we require that package
-%{__rm} -r $RPM_BUILD_ROOT%{jredir}/lib/zi
-
 %{__rm} $RPM_BUILD_ROOT%{dstdir}/{,jre/}{ASSEMBLY_EXCEPTION,LICENSE,THIRD_PARTY_README}
 
 %{?with_cacerts:install cacerts $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/security}
@@ -514,7 +515,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files jdk
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/apt
 %attr(755,root,root) %{_bindir}/extcheck
 %attr(755,root,root) %{_bindir}/idlj
 %attr(755,root,root) %{_bindir}/jarsigner
@@ -526,6 +526,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jcmd
 %attr(755,root,root) %{_bindir}/jconsole
 %attr(755,root,root) %{_bindir}/jdb
+%attr(755,root,root) %{_bindir}/jdeps
 %attr(755,root,root) %{_bindir}/jhat
 %attr(755,root,root) %{_bindir}/jinfo
 %attr(755,root,root) %{_bindir}/jmap
@@ -543,7 +544,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/wsimport
 %attr(755,root,root) %{_bindir}/xjc
 %{_jvmdir}/java
-%{_mandir}/man1/apt.1*
 %{_mandir}/man1/extcheck.1*
 %{_mandir}/man1/idlj.1*
 %{_mandir}/man1/jarsigner.1*
@@ -554,6 +554,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/jcmd.1*
 %{_mandir}/man1/jconsole.1*
 %{_mandir}/man1/jdb.1*
+%{_mandir}/man1/jdeps.1*
 %{_mandir}/man1/jhat.1*
 %{_mandir}/man1/jinfo.1*
 %{_mandir}/man1/jmap.1*
@@ -570,7 +571,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/wsgen.1*
 %{_mandir}/man1/wsimport.1*
 %{_mandir}/man1/xjc.1*
-%lang(ja) %{_mandir}/ja/man1/apt.1*
 %lang(ja) %{_mandir}/ja/man1/extcheck.1*
 %lang(ja) %{_mandir}/ja/man1/idlj.1*
 %lang(ja) %{_mandir}/ja/man1/jarsigner.1*
@@ -581,6 +581,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(ja) %{_mandir}/ja/man1/jcmd.1*
 %lang(ja) %{_mandir}/ja/man1/jconsole.1*
 %lang(ja) %{_mandir}/ja/man1/jdb.1*
+%lang(ja) %{_mandir}/ja/man1/jdeps.1*
 %lang(ja) %{_mandir}/ja/man1/jhat.1*
 %lang(ja) %{_mandir}/ja/man1/jinfo.1*
 %lang(ja) %{_mandir}/ja/man1/jmap.1*
@@ -600,12 +601,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files jdk-base
 %defattr(644,root,root,755)
-%doc openjdk.build/j2sdk-image/THIRD_PARTY_README
-%doc openjdk.build/j2sdk-image/ASSEMBLY_EXCEPTION
+%doc build/*-release/images/j2sdk-image/THIRD_PARTY_README
+%doc build/*-release/images/j2sdk-image/ASSEMBLY_EXCEPTION
 %dir %{dstdir}
 %{_jvmdir}/%{name}
 %attr(755,root,root) %{dstdir}/bin/appletviewer
-%attr(755,root,root) %{dstdir}/bin/apt
 %attr(755,root,root) %{dstdir}/bin/extcheck
 %attr(755,root,root) %{dstdir}/bin/idlj
 %attr(755,root,root) %{dstdir}/bin/jar
@@ -618,6 +618,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jconsole
 %attr(755,root,root) %{dstdir}/bin/jcmd
 %attr(755,root,root) %{dstdir}/bin/jdb
+%attr(755,root,root) %{dstdir}/bin/jdeps
 %attr(755,root,root) %{dstdir}/bin/jhat
 %attr(755,root,root) %{dstdir}/bin/jinfo
 %attr(755,root,root) %{dstdir}/bin/jmap
@@ -649,11 +650,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{dstdir}/lib/%{jre_arch}
 %dir %{dstdir}/lib/%{jre_arch}/jli
 %attr(755,root,root) %{dstdir}/lib/%{jre_arch}/jli/*.so
-%{dstdir}/tapset
 
 %files jre
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/java
+%attr(755,root,root) %{_bindir}/jjs
 %attr(755,root,root) %{_bindir}/keytool
 %attr(755,root,root) %{_bindir}/orbd
 %attr(755,root,root) %{_bindir}/pack200
@@ -663,6 +664,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/tnameserv
 %attr(755,root,root) %{_bindir}/unpack200
 %{_mandir}/man1/java.1*
+%{_mandir}/man1/jjs.1*
 %{_mandir}/man1/keytool.1*
 %{_mandir}/man1/orbd.1*
 %{_mandir}/man1/pack200.1*
@@ -672,6 +674,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/tnameserv.1*
 %{_mandir}/man1/unpack200.1*
 %lang(ja) %{_mandir}/ja/man1/java.1*
+%lang(ja) %{_mandir}/ja/man1/jjs.1*
 %lang(ja) %{_mandir}/ja/man1/keytool.1*
 %lang(ja) %{_mandir}/ja/man1/orbd.1*
 %lang(ja) %{_mandir}/ja/man1/pack200.1*
@@ -695,6 +698,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{dstdir}/bin
 %attr(755,root,root) %{jredir}/bin/java
 %attr(755,root,root) %{dstdir}/bin/java
+%attr(755,root,root) %{jredir}/bin/jjs
+%attr(755,root,root) %{dstdir}/bin/jjs
 %attr(755,root,root) %{jredir}/bin/keytool
 %attr(755,root,root) %{dstdir}/bin/keytool
 %attr(755,root,root) %{jredir}/bin/orbd
@@ -721,31 +726,29 @@ rm -rf $RPM_BUILD_ROOT
 %{jredir}/lib/%{jre_arch}/client/Xusage.txt
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/client/*.so
 %endif
-%dir %{jredir}/lib/%{jre_arch}/headless
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/headless/*.so
 %dir %{jredir}/lib/%{jre_arch}/jli
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/jli/*.so
+%{jredir}/lib/%{jre_arch}/jli/*.diz
 %dir %{jredir}/lib/%{jre_arch}/server
 %{jredir}/lib/%{jre_arch}/server/Xusage.txt
-%ifnarch x32
-%{jredir}/lib/%{jre_arch}/server/classes.jsa
-%endif
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/server/*.so
+%{jredir}/lib/%{jre_arch}/server/*.diz
 %{jredir}/lib/%{jre_arch}/jvm.cfg
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libattach.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libawt.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libawt_headless.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libdt_socket.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libhprof.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libinstrument.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libj2gss.so
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libj2krb5.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libj2pcsc.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libj2pkcs11.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjaas_unix.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjava.so
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjavajpeg.so
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjavalcms.so
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjavasctp.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjpeg.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/liblcms.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libsctp.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libsunec.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjava_crw_demo.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjawt.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjdwp.so
@@ -765,10 +768,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libunpack.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libverify.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libzip.so
+%{jredir}/lib/%{jre_arch}/*.diz
 %{jredir}/lib/images
 %{jredir}/lib/management
 %{jredir}/lib/security
-
 %if %{with webstart}
 %{jredir}/lib/about.jar
 %{jredir}/lib/about.jnlp
@@ -779,7 +782,7 @@ rm -rf $RPM_BUILD_ROOT
 %{jredir}/lib/content-types.properties
 %{jredir}/lib/currency.data
 %{jredir}/lib/flavormap.properties
-%{jredir}/lib/fontconfig.*
+%{jredir}/lib/hijrah-config-umalqura.properties
 %{jredir}/lib/jce.jar
 %attr(755, root, root) %{jredir}/lib/jexec
 %{jredir}/lib/jsse.jar
@@ -791,10 +794,10 @@ rm -rf $RPM_BUILD_ROOT
 %{jredir}/lib/psfont.properties.ja
 %{jredir}/lib/psfontj2d.properties
 %{jredir}/lib/resources.jar
-%{jredir}/lib/rhino.jar
 %{jredir}/lib/rt.jar
 %{jredir}/lib/sound.properties
-%{jredir}/lib/tz.properties
+%{jredir}/lib/tzdb.dat
+%{jredir}/lib/*.diz
 %{jvmjardir}
 
 %files jre-X11
@@ -807,9 +810,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{jredir}/bin/policytool
 %attr(755,root,root) %{dstdir}/bin/policytool
-%dir %{jredir}/lib/%{jre_arch}/xawt
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/xawt/*.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libsplashscreen.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libawt_xawt.so
+%attr(755,root,root) %{dstdir}/lib/%{jre_arch}/libjawt.so
 
 %files jre-base-alsa
 %defattr(644,root,root,755)
@@ -819,9 +822,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libfontmanager.so
 
+%if 0
 %files jre-base-gtk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjavagtk.so
+%endif
 
 %files jar
 %defattr(644,root,root,755)
