@@ -2,7 +2,7 @@
 # TODO:
 # 	- fix BuildRequires
 #	- fix build with system giflib
-#	- use other system libs (libjpeg, liblcms, libsctp)
+#	- use other system libs (libsctp?)
 #	- build alternative VM for x32
 #	- include icedtea-sound?
 #	- port PLD-specific changes from icedtea7?
@@ -52,11 +52,14 @@ Patch0:		adjust-mflags.patch
 Patch1:		format_strings.patch
 Patch2:		CompileDemos.patch
 Patch3:		libpath.patch
+Patch4:		system-libjpeg.patch
+Patch5:		system-libpng.patch
+Patch6:		system-lcms.patch
+Patch7:		system-pcsclite.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	alsa-lib-devel
 BuildRequires:	ant
 BuildRequires:	autoconf
-BuildRequires:	automake
 BuildRequires:	bash
 %{?with_cacerts:BuildRequires:	ca-certificates-update}
 BuildRequires:	cups-devel
@@ -66,8 +69,11 @@ BuildRequires:	gawk
 #BuildRequires:	giflib-devel >= 5.1
 BuildRequires:	glibc-misc
 %buildrequires_jdk
+BuildRequires:	lcms2-devel
 BuildRequires:	libjpeg-devel
+BuildRequires:	libpng-devel
 BuildRequires:	lsb-release
+BuildRequires:	pcsc-lite-devel
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.557
 BuildRequires:	unzip
@@ -411,6 +417,10 @@ done
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
@@ -418,6 +428,10 @@ if [ ! -f /proc/self/stat ]; then
 	echo "You need to have /proc mounted in order to build this package!"
 	exit 1
 fi
+
+cd common/autoconf
+%{__autoconf} -o generated-configure.sh
+cd ../..
 
 mkdir -p build-bin
 export JAVA_HOME=%{java_home}
@@ -431,6 +445,10 @@ chmod a+x configure
 	--with-extra-cxxflags="%{rpmcxxflags}" \
 	--with-extra-ldflags="%{rpmldflags}" \
 	--with-giflib=bundled \
+	--with-libjpeg=system \
+	--with-libpng=system \
+	--with-lcms=system \
+	--with-libpcsclite=system \
 	--with-zlib=system
 
 specdir="$(dirname build/*-release/spec.gmk)"
@@ -748,11 +766,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libj2pkcs11.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjaas_unix.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjava.so
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjpeg.so
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/liblcms.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libsctp.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libsunec.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjava_crw_demo.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjavajpeg.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjavalcms.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjawt.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjdwp.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjsdt.so
