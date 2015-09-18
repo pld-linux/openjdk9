@@ -458,6 +458,7 @@ EOF
 [ -d tmp-bin ] || ln -s "$specdir/jdk/bin" tmp-bin
 
 %{__make} all \
+	-j1 JOBS=%{__jobs} \
 	LOG=debug
 
 export PATH="$(pwd)/build-bin:$PATH"
