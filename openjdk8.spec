@@ -1,7 +1,5 @@
 #
 # TODO:
-# 	- fix BuildRequires
-#	- fix build with system giflib
 #	- use other system libs (libsctp?)
 #	- build alternative VM for x32
 #	- include icedtea-sound?
@@ -65,7 +63,7 @@ BuildRequires:	bash
 BuildRequires:	cups-devel
 BuildRequires:	freetype-devel >= 2.3
 BuildRequires:	gawk
-#BuildRequires:	giflib-devel >= 5.1
+BuildRequires:	giflib-devel >= 5.1
 BuildRequires:	glibc-misc
 %{?buildrequires_jdk}
 BuildRequires:	lcms2-devel
@@ -451,7 +449,7 @@ chmod a+x configure
 	--with-extra-cxxflags="%{rpmcxxflags}" \
 	--with-extra-ldflags="%{rpmldflags}" \
 	--disable-debug-symbols \
-	--with-giflib=bundled \
+	--with-giflib=system \
 	--with-libjpeg=system \
 	--with-libpng=system \
 	--with-lcms=system \
