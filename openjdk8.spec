@@ -714,8 +714,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files jre-base
 %defattr(644,root,root,755)
-%doc openjdk.build/j2sdk-image/THIRD_PARTY_README
-%doc openjdk.build/j2sdk-image/ASSEMBLY_EXCEPTION
+%doc THIRD_PARTY_README
+%doc ASSEMBLY_EXCEPTION
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*
 %dir %{dstdir}
