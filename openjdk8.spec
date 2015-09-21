@@ -6,7 +6,6 @@
 #	- build alternative VM for x32
 #	- include icedtea-sound?
 #	- port PLD-specific changes from icedtea7?
-#	- '*** WARNING: no sources found for ...'
 
 %bcond_with bootstrap   # build a bootstrap version, using icedtea6
 %bcond_without cacerts	# don't include the default CA certificates
@@ -446,10 +445,12 @@ export SHELL=/bin/bash
 
 chmod a+x configure
 
+# disable-debug-symbols so openjdk debuginfo handling won't conflict with ours
 %configure \
 	--with-extra-cflags="%{rpmcflags}" \
 	--with-extra-cxxflags="%{rpmcxxflags}" \
 	--with-extra-ldflags="%{rpmldflags}" \
+	--disable-debug-symbols \
 	--with-giflib=bundled \
 	--with-libjpeg=system \
 	--with-libpng=system \
@@ -459,13 +460,18 @@ chmod a+x configure
 
 specdir="$(dirname build/*-release/spec.gmk)"
 cat > $specdir/custom-spec.gmk <<EOF
+# OpenJDK build system depends on bash
 SHELL=/bin/bash
 EOF
-[ -d tmp-bin ] || ln -s "$specdir/jdk/bin" tmp-bin
+[ -L tmp-bin ] || ln -s "$specdir/jdk/bin" tmp-bin
 
 %{__make} all \
 	-j1 JOBS=%{__jobs} \
-	LOG=debug
+	LOG=debug \
+	# these are normally set when --disable-debug-symbols is not used \
+	LIBMANAGEMENT_OPTIMIZATION=LOW \
+	LIBHPROF_OPTIMIZATION=LOW \
+	LIBVERIFY_OPTIMIZATION=LOW
 
 export PATH="$(pwd)/build-bin:$PATH"
 %{?with_cacerts:%{__sh} %{SOURCE10}}
@@ -756,11 +762,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %dir %{jredir}/lib/%{jre_arch}/jli
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/jli/*.so
-%{jredir}/lib/%{jre_arch}/jli/*.diz
 %dir %{jredir}/lib/%{jre_arch}/server
 %{jredir}/lib/%{jre_arch}/server/Xusage.txt
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/server/*.so
-%{jredir}/lib/%{jre_arch}/server/*.diz
 %{jredir}/lib/%{jre_arch}/jvm.cfg
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libattach.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libawt.so
@@ -796,7 +800,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libunpack.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libverify.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libzip.so
-%{jredir}/lib/%{jre_arch}/*.diz
 %{jredir}/lib/images
 %{jredir}/lib/management
 %{jredir}/lib/security
@@ -825,7 +828,6 @@ rm -rf $RPM_BUILD_ROOT
 %{jredir}/lib/rt.jar
 %{jredir}/lib/sound.properties
 %{jredir}/lib/tzdb.dat
-%{jredir}/lib/*.diz
 %{jvmjardir}
 
 %files jre-X11
