@@ -21,10 +21,10 @@
 # JDK/JRE version, as returned with `java -version`, '_' replaced with '.'
 %define		_jdkversion 1.8.0.internal
 
-Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
 %define	ver_u	66
 %define	ver_b	02
+Summary:	Open-source implementation of the Java Platform, Standard Edition
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
 Name:		openjdk8
 Version:	8u%{ver_u}.b%{ver_b}
 Release:	0.1
@@ -67,7 +67,7 @@ BuildRequires:	freetype-devel >= 2.3
 BuildRequires:	gawk
 #BuildRequires:	giflib-devel >= 5.1
 BuildRequires:	glibc-misc
-%buildrequires_jdk
+%{?buildrequires_jdk}
 BuildRequires:	lcms2-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
