@@ -23,28 +23,28 @@
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
-Name:		openjdk8
 %define	ver_u	66
 %define	ver_b	02
+Name:		openjdk8
 Version:	8u%{ver_u}.b%{ver_b}
 Release:	0.1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	openjdk8-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+Source0:	%{name}-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source0-md5:	1d115662e175470270e89a4da8e0fce2
-Source1:	openjdk8-corba-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+Source1:	%{name}-corba-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source1-md5:	e14d8f51b9ca30d798094a2867f3f5d0
-Source2:	openjdk8-hotspot-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+Source2:	%{name}-hotspot-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source2-md5:	b49a7b7f2db5b07306b7b5739e87ccc0
-Source3:	openjdk8-jaxp-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+Source3:	%{name}-jaxp-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source3-md5:	6bd5ae187272a209439d1a95ac6c9025
-Source4:	openjdk8-jaxws-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+Source4:	%{name}-jaxws-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source4-md5:	15e6a93009bdc73194e7118988d5ab8d
-Source5:	openjdk8-jdk-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+Source5:	%{name}-jdk-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source5-md5:	74f2cf3815659b83993c4187e7fc4f6b
-Source6:	openjdk8-langtools-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+Source6:	%{name}-langtools-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source6-md5:	de5c9b5fdbcd75028b71ed667d4b99d2
-Source7:	openjdk8-nashorn-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
+Source7:	%{name}-nashorn-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
 # Source7-md5:	7da4e88349cfc45ee9726eaa4386be03
 Source10:	make-cacerts.sh
 Patch0:		adjust-mflags.patch
@@ -55,18 +55,8 @@ Patch4:		system-libjpeg.patch
 Patch5:		system-libpng.patch
 Patch6:		system-lcms.patch
 Patch7:		system-pcsclite.patch
-URL:		http://openjdk.java.net/
-BuildRequires:	alsa-lib-devel
-BuildRequires:	ant
-BuildRequires:	autoconf
-BuildRequires:	bash
-%{?with_cacerts:BuildRequires:	ca-certificates-update}
-BuildRequires:	cups-devel
-BuildRequires:	/usr/bin/jar
-BuildRequires:	freetype-devel >= 2.3
-BuildRequires:	gawk
-#BuildRequires:	giflib-devel >= 5.1
-BuildRequires:	glibc-misc
+%prep
+
 %buildrequires_jdk
 BuildRequires:	lcms2-devel
 BuildRequires:	libjpeg-devel
@@ -150,6 +140,18 @@ wszystkie komponenty OpenJDK, w tym środowisko programistyczne
 
 %package jdk
 Summary:	OpenJDK - software development kit
+URL:		http://openjdk.java.net/
+BuildRequires:	/usr/bin/jar
+BuildRequires:	alsa-lib-devel
+BuildRequires:	ant
+BuildRequires:	autoconf
+BuildRequires:	bash
+%{?with_cacerts:BuildRequires:	ca-certificates-update}
+BuildRequires:	cups-devel
+BuildRequires:	freetype-devel >= 2.3
+BuildRequires:	gawk
+#BuildRequires:	giflib-devel >= 5.1
+BuildRequires:	glibc-misc
 Summary(pl.UTF-8):	OpenJDK - środowisko programistyczne
 Group:		Development/Languages/Java
 Requires:	%{name}-jar = %{version}-%{release}
@@ -165,9 +167,9 @@ Obsoletes:	java-blackdown
 Obsoletes:	java-gcj-compat-devel
 Obsoletes:	java-sun
 Obsoletes:	java5-sun
-Obsoletes:	oracle-java7
 Obsoletes:	jdk
 Obsoletes:	kaffe
+Obsoletes:	oracle-java7
 
 %description jdk
 This package symlinks OpenJDK development tools provided by
@@ -230,8 +232,8 @@ Obsoletes:	java(jsse)
 Obsoletes:	java-gcj-compat
 Obsoletes:	java-sun-jre
 Obsoletes:	java5-sun-jre
-Obsoletes:	oracle-java7-jre
 Obsoletes:	jre
+Obsoletes:	oracle-java7-jre
 
 %description jre
 This package symlinks OpenJDK runtime environment tools provided by
@@ -491,7 +493,7 @@ ln -s %{jrereldir} $RPM_BUILD_ROOT%{_jvmdir}/%{name}-jre
 
 ln -s %{dstreldir} $RPM_BUILD_ROOT%{_jvmdir}/java
 
-# move JDK sources and demo to /usr/src
+# move JDK sources and demo to %{_prefix}/src
 mv $RPM_BUILD_ROOT%{dstdir}/demo $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 mv $RPM_BUILD_ROOT%{dstdir}/sample $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 mv $RPM_BUILD_ROOT%{dstdir}/src.zip $RPM_BUILD_ROOT%{_javasrcdir}/%{name}-jdk.zip
@@ -515,7 +517,7 @@ for path in $RPM_BUILD_ROOT%{dstdir}/bin/*; do
 done
 ln -sf ../jre/lib/jexec $RPM_BUILD_ROOT%{dstdir}/lib/jexec
 
-# keep configuration in /etc (not all *.properties go there)
+# keep configuration in %{_sysconfdir} (not all *.properties go there)
 for config in management security content-types.properties \
 		logging.properties net.properties sound.properties; do
 
