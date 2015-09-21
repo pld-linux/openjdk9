@@ -755,11 +755,6 @@ rm -rf $RPM_BUILD_ROOT
 %{jredir}/lib/cmm
 %{jredir}/lib/ext
 %dir %{jredir}/lib/%{jre_arch}
-%ifnarch %{x8664} x32
-%dir %{jredir}/lib/%{jre_arch}/client
-%{jredir}/lib/%{jre_arch}/client/Xusage.txt
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/client/*.so
-%endif
 %dir %{jredir}/lib/%{jre_arch}/jli
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/jli/*.so
 %dir %{jredir}/lib/%{jre_arch}/server
