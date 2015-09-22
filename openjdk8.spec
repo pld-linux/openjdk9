@@ -1,4 +1,8 @@
 #
+# NOTE:	versioning and release status might not be clear
+#	http://openjdk.java.net/projects/jdk8u/ gives some information
+#	about current status of the 'updates'
+#
 # TODO:
 #	- use other system libs (libsctp?)
 #	- include icedtea-sound?
