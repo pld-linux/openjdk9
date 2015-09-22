@@ -786,7 +786,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjava_crw_demo.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjavajpeg.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjavalcms.so
-%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjawt.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjdwp.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjsdt.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjsig.so
@@ -847,6 +846,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libsplashscreen.so
 %attr(755,root,root) %{jredir}/lib/%{jre_arch}/libawt_xawt.so
 %attr(755,root,root) %{dstdir}/lib/%{jre_arch}/libjawt.so
+%attr(755,root,root) %{jredir}/lib/%{jre_arch}/libjawt.so
 
 %files jre-base-alsa
 %defattr(644,root,root,755)
