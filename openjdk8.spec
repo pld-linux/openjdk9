@@ -1,9 +1,8 @@
 #
 # TODO:
 #	- use other system libs (libsctp?)
-#	- build alternative VM for x32
 #	- include icedtea-sound?
-#	- port PLD-specific changes from icedtea7?
+#	- consider zeroshark (LLVM-based JIT) for x32
 
 %bcond_with bootstrap   # build a bootstrap version, using icedtea6
 %bcond_without cacerts	# don't include the default CA certificates
@@ -53,6 +52,8 @@ Patch4:		system-libjpeg.patch
 Patch5:		system-libpng.patch
 Patch6:		system-lcms.patch
 Patch7:		system-pcsclite.patch
+Patch8:		x32.patch
+Patch9:		current_stack_pointer.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -418,6 +419,8 @@ done
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
@@ -427,6 +430,7 @@ if [ ! -f /proc/self/stat ]; then
 fi
 
 cd common/autoconf
+rm generated-configure.sh
 %{__autoconf} -o generated-configure.sh
 cd ../..
 
@@ -445,6 +449,9 @@ chmod a+x configure
 
 # disable-debug-symbols so openjdk debuginfo handling won't conflict with ours
 %configure \
+%ifarch x32
+	--with-jvm-variants=zero \
+%endif
 	--with-extra-cflags="%{rpmcflags}" \
 	--with-extra-cxxflags="%{rpmcxxflags}" \
 	--with-extra-ldflags="%{rpmldflags}" \

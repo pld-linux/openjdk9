@@ -1,0 +1,118 @@
+diff -durN jdk8u-jdk8u66-b02.orig/common/autoconf/platform.m4 jdk8u-jdk8u66-b02/common/autoconf/platform.m4
+--- jdk8u-jdk8u66-b02.orig/common/autoconf/platform.m4	2015-07-17 09:35:23.000000000 +0200
++++ jdk8u-jdk8u66-b02/common/autoconf/platform.m4	2015-09-21 13:18:18.439165925 +0200
+@@ -31,10 +31,20 @@
+   # First argument is the cpu name from the trip/quad
+   case "$1" in
+     x86_64)
+-      VAR_CPU=x86_64
+-      VAR_CPU_ARCH=x86
+-      VAR_CPU_BITS=64
+-      VAR_CPU_ENDIAN=little
++      case "$target_os" in
++        *x32)
++          VAR_CPU=x32
++          VAR_CPU_ARCH=x86
++          VAR_CPU_BITS=32
++          VAR_CPU_ENDIAN=little
++          ;;
++        *)
++          VAR_CPU=x86_64
++          VAR_CPU_ARCH=x86
++          VAR_CPU_BITS=64
++          VAR_CPU_ENDIAN=little
++          ;;
++      esac
+       ;;
+     i?86)
+       VAR_CPU=x86
+@@ -375,7 +385,16 @@
+     ppc64)   ZERO_ARCHDEF=PPC64 ;;
+     s390*)   ZERO_ARCHDEF=S390  ;;
+     sparc*)  ZERO_ARCHDEF=SPARC ;;
+-    x86_64*) ZERO_ARCHDEF=AMD64 ;;
++    x86_64*)
++      case "$target_os" in
++        *x32)
++          ZERO_ARCHDEF=X32
++          ;;
++        *)
++          ZERO_ARCHDEF=AMD64
++          ;;
++      esac
++      ;;
+     x86)     ZERO_ARCHDEF=IA32  ;;
+     *)      ZERO_ARCHDEF=$(echo "${OPENJDK_TARGET_CPU_LEGACY_LIB}" | tr a-z A-Z)
+   esac
+diff -durN jdk8u-jdk8u66-b02.orig/hotspot/src/os/linux/vm/os_linux.cpp jdk8u-jdk8u66-b02/hotspot/src/os/linux/vm/os_linux.cpp
+--- jdk8u-jdk8u66-b02.orig/hotspot/src/os/linux/vm/os_linux.cpp	2015-09-21 13:05:51.883678088 +0200
++++ jdk8u-jdk8u66-b02/hotspot/src/os/linux/vm/os_linux.cpp	2015-09-21 13:12:58.665870862 +0200
+@@ -1902,7 +1902,7 @@
+ 
+   #if  (defined IA32)
+     static  Elf32_Half running_arch_code=EM_386;
+-  #elif   (defined AMD64)
++  #elif  (defined AMD64) || (defined X32)
+     static  Elf32_Half running_arch_code=EM_X86_64;
+   #elif  (defined IA64)
+     static  Elf32_Half running_arch_code=EM_IA_64;
+diff -durN jdk8u-jdk8u66-b02.orig/jdk/make/gensrc/GensrcX11Wrappers.gmk jdk8u-jdk8u66-b02/jdk/make/gensrc/GensrcX11Wrappers.gmk
+--- jdk8u-jdk8u66-b02.orig/jdk/make/gensrc/GensrcX11Wrappers.gmk	2015-07-23 16:17:35.000000000 +0200
++++ jdk8u-jdk8u66-b02/jdk/make/gensrc/GensrcX11Wrappers.gmk	2015-09-21 13:13:00.339291213 +0200
+@@ -87,9 +87,11 @@
+ 	$(TOOL_WRAPPERGENERATOR) $(@D) $(GENSRC_SIZER_DIR)/xlibtypes.txt "sizer" $*
+ 
+   # use -m32/-m64 only if the compiler supports it
++  ifneq ($(OPENJDK_TARGET_CPU),x32)
+   ifeq ($(COMPILER_SUPPORTS_TARGET_BITS_FLAG), true)
+     MEMORY_MODEL_FLAG="$(COMPILER_TARGET_BITS_FLAG)$*"
+   endif
++  endif
+ 
+   # Compile the C code into an executable.
+   $(GENSRC_X11WRAPPERS_TMP)/sizer.%.exe: $(GENSRC_X11WRAPPERS_TMP)/sizer.%.c
+diff -durN jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c jdk8u-jdk8u66-b02/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c
+--- jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c	2015-07-23 16:17:35.000000000 +0200
++++ jdk8u-jdk8u66-b02/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c	2015-09-21 13:13:00.335957707 +0200
+@@ -35,7 +35,6 @@
+ #endif
+ #ifdef __linux__
+ #include <unistd.h>
+-#include <sys/sysctl.h>
+ #include <sys/utsname.h>
+ #include <netinet/ip.h>
+ 
+diff -durN jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainSocketImpl.c jdk8u-jdk8u66-b02/jdk/src/solaris/native/java/net/PlainSocketImpl.c
+--- jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainSocketImpl.c	2015-07-23 16:17:35.000000000 +0200
++++ jdk8u-jdk8u66-b02/jdk/src/solaris/native/java/net/PlainSocketImpl.c	2015-09-21 13:13:00.335957707 +0200
+@@ -43,7 +43,6 @@
+ #endif
+ #ifdef __linux__
+ #include <unistd.h>
+-#include <sys/sysctl.h>
+ #endif
+ 
+ #include "jvm.h"
+ 
+--- jdk8u-jdk8u66-b02.orig/common/autoconf/toolchain.m4	2015-07-17 09:35:23.000000000 +0200
++++ jdk8u-jdk8u66-b02/common/autoconf/toolchain.m4	2015-09-21 16:00:30.328673989 +0200
+@@ -361,6 +361,7 @@
+   # Option used to tell the compiler whether to create 32- or 64-bit executables
+   # Notice that CC contains the full compiler path at this point.
+   case $CC in
++    *x32-*) COMPILER_TARGET_BITS_FLAG="-mx";;
+     *xlc_r) COMPILER_TARGET_BITS_FLAG="-q";;
+     *)      COMPILER_TARGET_BITS_FLAG="-m";;
+   esac
+
+--- jdk8u-jdk8u66-b02.orig/hotspot/src/cpu/zero/vm/frame_zero.cpp	2015-07-22 19:12:56.000000000 +0200
++++ jdk8u-jdk8u66-b02/hotspot/src/cpu/zero/vm/frame_zero.cpp	2015-09-21 15:28:59.680331993 +0200
+@@ -216,7 +216,7 @@
+     valuebuf[buflen - 1] = '\0';
+ 
+     // Print the result
+-    st->print_cr(" " PTR_FORMAT ": %-21s = %s", addr, fieldbuf, valuebuf);
++    st->print_cr(" " PTR_FORMAT ": %-21s = %s", (uintptr_t)addr, fieldbuf, valuebuf);
+   }
+ }
+ 

@@ -1,0 +1,14 @@
+diff -dur jdk8u-jdk8u66-b02.orig/hotspot/src/os_cpu/linux_zero/vm/os_linux_zero.cpp jdk8u-jdk8u66-b02/hotspot/src/os_cpu/linux_zero/vm/os_linux_zero.cpp
+--- jdk8u-jdk8u66-b02.orig/hotspot/src/os_cpu/linux_zero/vm/os_linux_zero.cpp	2015-07-22 19:12:56.000000000 +0200
++++ jdk8u-jdk8u66-b02/hotspot/src/os_cpu/linux_zero/vm/os_linux_zero.cpp	2015-09-21 20:19:55.821171221 +0200
+@@ -55,8 +55,8 @@
+ #include "utilities/vmError.hpp"
+ 
+ address os::current_stack_pointer() {
+-  address dummy = (address) &dummy;
+-  return dummy;
++  // return the address of the current function
++  return (address)__builtin_frame_address(0);
+ }
+ 
+ frame os::get_sender_for_C_frame(frame* fr) {
