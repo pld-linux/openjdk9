@@ -28,7 +28,7 @@ Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
 Name:		openjdk8
 Version:	8u%{ver_u}.b%{ver_b}
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	%{name}-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
