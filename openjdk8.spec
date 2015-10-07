@@ -188,7 +188,7 @@ Summary:	OpenJDK - software development kit
 Summary(pl.UTF-8):	Kod OpenJDK - środowisko programistyczne
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
-Requires:	jpackage-utils >= 0:1.7.5-4
+Requires:	jpackage-utils >= 0:1.7.5-7
 Provides:	jdk(%{name})
 
 %description jdk-base
@@ -271,7 +271,7 @@ wolnego oprogramowania.
 Summary:	OpenJDK - runtime environment
 Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe
 Group:		Development/Languages/Java
-Requires:	jpackage-utils >= 0:1.7.5-4
+Requires:	jpackage-utils >= 0:1.7.5-7
 Provides:	jre(%{name})
 
 %description jre-base
