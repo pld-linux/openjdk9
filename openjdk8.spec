@@ -22,31 +22,31 @@
 # JDK/JRE version, as returned with `java -version`, '_' replaced with '.'
 %define		_jdkversion 1.8.0.internal
 
-%define	ver_u	66
-%define	ver_b	02
+%define	ver_u	72
+%define	ver_b	15
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
 Name:		openjdk8
 Version:	8u%{ver_u}.b%{ver_b}
-Release:	2
+Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	%{name}-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source0-md5:	1d115662e175470270e89a4da8e0fce2
+# Source0-md5:	161dfcff6fbf49649b35c86fa5bbc2b4
 Source1:	%{name}-corba-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source1-md5:	e14d8f51b9ca30d798094a2867f3f5d0
+# Source1-md5:	c822b9ac498d5bfbaa82ce6fa1c126a4
 Source2:	%{name}-hotspot-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source2-md5:	b49a7b7f2db5b07306b7b5739e87ccc0
+# Source2-md5:	67a98eef6eed6fde18ec5e422bbdd074
 Source3:	%{name}-jaxp-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source3-md5:	6bd5ae187272a209439d1a95ac6c9025
+# Source3-md5:	fc20a017e3d3598de65240bc9a2ffbbc
 Source4:	%{name}-jaxws-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source4-md5:	15e6a93009bdc73194e7118988d5ab8d
+# Source4-md5:	669f95ee39534dcbbe538cb59bc78742
 Source5:	%{name}-jdk-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source5-md5:	74f2cf3815659b83993c4187e7fc4f6b
+# Source5-md5:	58fa5f03c7da51a07c000881ca8e1b1b
 Source6:	%{name}-langtools-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source6-md5:	de5c9b5fdbcd75028b71ed667d4b99d2
+# Source6-md5:	b85df8468b42a7c14c5d55e84339a2dd
 Source7:	%{name}-nashorn-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source7-md5:	7da4e88349cfc45ee9726eaa4386be03
+# Source7-md5:	1f9358090dc4ba710a14f31115de7c5f
 Source10:	make-cacerts.sh
 Patch0:		adjust-mflags.patch
 Patch1:		format_strings.patch
