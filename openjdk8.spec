@@ -56,6 +56,7 @@ Patch4:		system-libjpeg.patch
 Patch5:		system-libpng.patch
 Patch6:		system-lcms.patch
 Patch7:		system-pcsclite.patch
+Patch8:		x32.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -421,6 +422,7 @@ done
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
