@@ -22,8 +22,8 @@
 # JDK/JRE version, as returned with `java -version`, '_' replaced with '.'
 %define		_jdkversion 1.8.0.internal
 
-%define	ver_u	72
-%define	ver_b	15
+%define	ver_u	92
+%define	ver_b	31
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
 Name:		openjdk8
@@ -32,21 +32,21 @@ Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	%{name}-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source0-md5:	161dfcff6fbf49649b35c86fa5bbc2b4
+# Source0-md5:	12c37c3002601a22d3738fbfc7ce7fc4
 Source1:	%{name}-corba-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source1-md5:	c822b9ac498d5bfbaa82ce6fa1c126a4
+# Source1-md5:	04527579bbf4d1d62174e580c73b37f4
 Source2:	%{name}-hotspot-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source2-md5:	67a98eef6eed6fde18ec5e422bbdd074
+# Source2-md5:	9af1f1d01de54a7f1ee775747e97f603
 Source3:	%{name}-jaxp-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source3-md5:	fc20a017e3d3598de65240bc9a2ffbbc
+# Source3-md5:	462b944cbf7f082ded61dc4e4437a23c
 Source4:	%{name}-jaxws-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source4-md5:	669f95ee39534dcbbe538cb59bc78742
+# Source4-md5:	8e387a76f8d7c13cc3cb28efa400a134
 Source5:	%{name}-jdk-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source5-md5:	58fa5f03c7da51a07c000881ca8e1b1b
+# Source5-md5:	4a9c93dfef91c94779dd7606df04116e
 Source6:	%{name}-langtools-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source6-md5:	b85df8468b42a7c14c5d55e84339a2dd
+# Source6-md5:	5f6e4140c3ac0b76f1841a8adcaf416a
 Source7:	%{name}-nashorn-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source7-md5:	1f9358090dc4ba710a14f31115de7c5f
+# Source7-md5:	dca7539d79ca8ff2695fab7dcd260971
 Source10:	make-cacerts.sh
 Patch0:		adjust-mflags.patch
 Patch1:		format_strings.patch
@@ -56,8 +56,6 @@ Patch4:		system-libjpeg.patch
 Patch5:		system-libpng.patch
 Patch6:		system-lcms.patch
 Patch7:		system-pcsclite.patch
-Patch8:		x32.patch
-Patch9:		current_stack_pointer.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -423,8 +421,6 @@ done
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
-%patch9 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
