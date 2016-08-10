@@ -22,8 +22,8 @@
 # JDK/JRE version, as returned with `java -version`, '_' replaced with '.'
 %define		_jdkversion 1.8.0.internal
 
-%define	ver_u	92
-%define	ver_b	31
+%define	ver_u	102
+%define	ver_b	14
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
 Name:		openjdk8
@@ -32,21 +32,21 @@ Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	%{name}-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source0-md5:	12c37c3002601a22d3738fbfc7ce7fc4
+# Source0-md5:	04ecdce899eb3d6de9d5aadc438998c0
 Source1:	%{name}-corba-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source1-md5:	04527579bbf4d1d62174e580c73b37f4
+# Source1-md5:	6ea4a074a80d0ee4b6dcd50398835c49
 Source2:	%{name}-hotspot-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source2-md5:	9af1f1d01de54a7f1ee775747e97f603
+# Source2-md5:	27b9e7e94fc6a47f452e8a94ba156395
 Source3:	%{name}-jaxp-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source3-md5:	462b944cbf7f082ded61dc4e4437a23c
+# Source3-md5:	da82a91df3eb4c98ebaab4e71cbbcc4d
 Source4:	%{name}-jaxws-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source4-md5:	8e387a76f8d7c13cc3cb28efa400a134
+# Source4-md5:	8a91561bbc04f50a92032d82b78960e0
 Source5:	%{name}-jdk-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source5-md5:	4a9c93dfef91c94779dd7606df04116e
+# Source5-md5:	e65f6d029808a8b523e07d818c8ac9ad
 Source6:	%{name}-langtools-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source6-md5:	5f6e4140c3ac0b76f1841a8adcaf416a
+# Source6-md5:	61c645dbacfb925944f716ec50474821
 Source7:	%{name}-nashorn-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
-# Source7-md5:	dca7539d79ca8ff2695fab7dcd260971
+# Source7-md5:	2c981235c1cbaba58197fd9b7ffd00e1
 Source10:	make-cacerts.sh
 Patch0:		adjust-mflags.patch
 Patch1:		format_strings.patch
@@ -456,8 +456,8 @@ chmod a+x configure
 %ifarch x32
 	--with-jvm-variants=zero \
 %endif
-	--with-extra-cflags="%{rpmcflags}" \
-	--with-extra-cxxflags="%{rpmcxxflags}" \
+	--with-extra-cflags="%{rpmcflags} -Wno-error=deprecated-declarations" \
+	--with-extra-cxxflags="%{rpmcxxflags} -Wno-error=deprecated-declarations" \
 	--with-extra-ldflags="%{rpmldflags}" \
 	--disable-debug-symbols \
 	--with-giflib=system \
