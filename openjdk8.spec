@@ -482,6 +482,9 @@ EOF
 	LIBHPROF_OPTIMIZATION=LOW \
 	LIBVERIFY_OPTIMIZATION=LOW
 
+# smoke test
+tmp-bin/java -version
+
 export PATH="$(pwd)/build-bin:$PATH"
 %{?with_cacerts:%{__sh} %{SOURCE10}}
 
