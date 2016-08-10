@@ -106,3 +106,14 @@ diff -durN jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainSocketImp
    esac
 
 
+--- jdk8u-jdk8u92-b31/jdk/src/share/native/com/sun/java/util/jar/pack/unpack.cpp.orig	2016-07-29 15:08:03.457784497 +0200
++++ jdk8u-jdk8u92-b31/jdk/src/share/native/com/sun/java/util/jar/pack/unpack.cpp	2016-07-29 15:10:09.380999329 +0200
+@@ -34,7 +34,7 @@
+  * _LP64 can be explicitly set (used on Linux).
+  * Solaris compilers will define __sparcv9 or __x86_64 on 64bit compilations.
+  */
+-#if defined(_LP64) || defined(__sparcv9) || defined(__x86_64)
++#if defined(_LP64) || defined(__sparcv9) || (defined(__x86_64) && !defined(__ILP32__))
+   #define LONG_LONG_FORMAT "%ld"
+   #define LONG_LONG_HEX_FORMAT "%lx"
+ #else
