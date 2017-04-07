@@ -28,7 +28,7 @@ Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 8 SE
 Name:		openjdk8
 Version:	8u%{ver_u}.b%{ver_b}
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	%{name}-jdk8u%{ver_u}-b%{ver_b}.tar.bz2
@@ -58,6 +58,7 @@ Patch6:		system-lcms.patch
 Patch7:		system-pcsclite.patch
 Patch8:		x32.patch
 Patch9:		protos.patch
+Patch10:	gcc6.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -425,6 +426,7 @@ done
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
