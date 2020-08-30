@@ -1,6 +1,21 @@
-diff -durN jdk8u-jdk8u66-b02.orig/common/autoconf/platform.m4 jdk8u-jdk8u66-b02/common/autoconf/platform.m4
---- jdk8u-jdk8u66-b02.orig/common/autoconf/platform.m4	2015-07-17 09:35:23.000000000 +0200
-+++ jdk8u-jdk8u66-b02/common/autoconf/platform.m4	2015-09-21 13:18:18.439165925 +0200
+diff -urN jdk9u-jdk-9.0.4+12.orig/common/autoconf/flags.m4 jdk9u-jdk-9.0.4+12/common/autoconf/flags.m4
+--- jdk9u-jdk-9.0.4+12.orig/common/autoconf/flags.m4	2017-12-20 00:25:20.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/common/autoconf/flags.m4	2020-08-29 23:58:39.603994302 +0200
+@@ -215,7 +215,10 @@
+     COMPILER_COMMAND_FILE_FLAG="-f"
+     COMPILER_BINDCMD_FILE_FLAG="-bloadmap:"
+   else
+-    COMPILER_TARGET_BITS_FLAG="-m"
++    case $CC in
++      *x32-*) COMPILER_TARGET_BITS_FLAG="-mx";;
++      *) COMPILER_TARGET_BITS_FLAG="-m"
++    esac
+     COMPILER_COMMAND_FILE_FLAG="@"
+     COMPILER_BINDCMD_FILE_FLAG=""
+ 
+diff -urN jdk9u-jdk-9.0.4+12.orig/common/autoconf/platform.m4 jdk9u-jdk-9.0.4+12/common/autoconf/platform.m4
+--- jdk9u-jdk-9.0.4+12.orig/common/autoconf/platform.m4	2017-12-20 00:25:20.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/common/autoconf/platform.m4	2020-08-29 23:54:36.322300132 +0200
 @@ -31,10 +31,20 @@
    # First argument is the cpu name from the trip/quad
    case "$1" in
@@ -26,39 +41,36 @@ diff -durN jdk8u-jdk8u66-b02.orig/common/autoconf/platform.m4 jdk8u-jdk8u66-b02/
        ;;
      i?86)
        VAR_CPU=x86
-@@ -375,7 +385,16 @@
-     ppc64)   ZERO_ARCHDEF=PPC64 ;;
-     s390*)   ZERO_ARCHDEF=S390  ;;
-     sparc*)  ZERO_ARCHDEF=SPARC ;;
--    x86_64*) ZERO_ARCHDEF=AMD64 ;;
-+    x86_64*)
+@@ -408,6 +418,14 @@
+     HOTSPOT_$1_CPU_DEFINE=IA32
+   elif test "x$OPENJDK_$1_CPU" = xx86_64; then
+     HOTSPOT_$1_CPU_DEFINE=AMD64
 +      case "$target_os" in
 +        *x32)
-+          ZERO_ARCHDEF=X32
++          HOTSPOT_$1_CPU_DEFINE=X32
 +          ;;
 +        *)
-+          ZERO_ARCHDEF=AMD64
++          HOTSPOT_$1_CPU_DEFINE=AMD64
 +          ;;
 +      esac
-+      ;;
-     x86)     ZERO_ARCHDEF=IA32  ;;
-     *)      ZERO_ARCHDEF=$(echo "${OPENJDK_TARGET_CPU_LEGACY_LIB}" | tr a-z A-Z)
-   esac
-diff -durN jdk8u-jdk8u66-b02.orig/hotspot/src/os/linux/vm/os_linux.cpp jdk8u-jdk8u66-b02/hotspot/src/os/linux/vm/os_linux.cpp
---- jdk8u-jdk8u66-b02.orig/hotspot/src/os/linux/vm/os_linux.cpp	2015-09-21 13:05:51.883678088 +0200
-+++ jdk8u-jdk8u66-b02/hotspot/src/os/linux/vm/os_linux.cpp	2015-09-21 13:12:58.665870862 +0200
-@@ -1902,7 +1902,7 @@
+   elif test "x$OPENJDK_$1_CPU" = xsparcv9; then
+     HOTSPOT_$1_CPU_DEFINE=SPARC
+   elif test "x$OPENJDK_$1_CPU" = xaarch64; then
+diff -urN jdk9u-jdk-9.0.4+12.orig/hotspot/src/os/linux/vm/os_linux.cpp jdk9u-jdk-9.0.4+12/hotspot/src/os/linux/vm/os_linux.cpp
+--- jdk9u-jdk-9.0.4+12.orig/hotspot/src/os/linux/vm/os_linux.cpp	2020-08-29 23:50:35.510694441 +0200
++++ jdk9u-jdk-9.0.4+12/hotspot/src/os/linux/vm/os_linux.cpp	2020-08-29 23:55:07.785416515 +0200
+@@ -1770,7 +1770,7 @@
  
-   #if  (defined IA32)
-     static  Elf32_Half running_arch_code=EM_386;
--  #elif   (defined AMD64)
-+  #elif  (defined AMD64) || (defined X32)
-     static  Elf32_Half running_arch_code=EM_X86_64;
-   #elif  (defined IA64)
-     static  Elf32_Half running_arch_code=EM_IA_64;
-diff -durN jdk8u-jdk8u66-b02.orig/jdk/make/gensrc/GensrcX11Wrappers.gmk jdk8u-jdk8u66-b02/jdk/make/gensrc/GensrcX11Wrappers.gmk
---- jdk8u-jdk8u66-b02.orig/jdk/make/gensrc/GensrcX11Wrappers.gmk	2015-07-23 16:17:35.000000000 +0200
-+++ jdk8u-jdk8u66-b02/jdk/make/gensrc/GensrcX11Wrappers.gmk	2015-09-21 13:13:00.339291213 +0200
+ #if  (defined IA32)
+   static  Elf32_Half running_arch_code=EM_386;
+-#elif   (defined AMD64)
++#elif   (defined AMD64) || (defined X32)
+   static  Elf32_Half running_arch_code=EM_X86_64;
+ #elif  (defined IA64)
+   static  Elf32_Half running_arch_code=EM_IA_64;
+diff -urN jdk9u-jdk-9.0.4+12.orig/jdk/make/gensrc/GensrcX11Wrappers.gmk jdk9u-jdk-9.0.4+12/jdk/make/gensrc/GensrcX11Wrappers.gmk
+--- jdk9u-jdk-9.0.4+12.orig/jdk/make/gensrc/GensrcX11Wrappers.gmk	2018-01-13 03:07:38.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/jdk/make/gensrc/GensrcX11Wrappers.gmk	2020-08-29 23:55:48.198473585 +0200
 @@ -87,9 +87,11 @@
  	$(TOOL_WRAPPERGENERATOR) $(@D) $(GENSRC_SIZER_DIR)/xlibtypes.txt "sizer" $*
  
@@ -69,51 +81,17 @@ diff -durN jdk8u-jdk8u66-b02.orig/jdk/make/gensrc/GensrcX11Wrappers.gmk jdk8u-jd
    endif
 +  endif
  
-   # Compile the C code into an executable.
-   $(GENSRC_X11WRAPPERS_TMP)/sizer.%.exe: $(GENSRC_X11WRAPPERS_TMP)/sizer.%.c
-diff -durN jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c jdk8u-jdk8u66-b02/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c
---- jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c	2015-07-23 16:17:35.000000000 +0200
-+++ jdk8u-jdk8u66-b02/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c	2015-09-21 13:13:00.335957707 +0200
-@@ -35,7 +35,6 @@
- #endif
- #ifdef __linux__
- #include <unistd.h>
--#include <sys/sysctl.h>
- #include <sys/utsname.h>
- #include <netinet/ip.h>
- 
-diff -durN jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainSocketImpl.c jdk8u-jdk8u66-b02/jdk/src/solaris/native/java/net/PlainSocketImpl.c
---- jdk8u-jdk8u66-b02.orig/jdk/src/solaris/native/java/net/PlainSocketImpl.c	2015-07-23 16:17:35.000000000 +0200
-+++ jdk8u-jdk8u66-b02/jdk/src/solaris/native/java/net/PlainSocketImpl.c	2015-09-21 13:13:00.335957707 +0200
-@@ -43,7 +43,6 @@
- #endif
- #ifdef __linux__
- #include <unistd.h>
--#include <sys/sysctl.h>
- #endif
- 
- #include "jvm.h"
- 
---- jdk8u-jdk8u66-b02.orig/common/autoconf/toolchain.m4	2015-07-17 09:35:23.000000000 +0200
-+++ jdk8u-jdk8u66-b02/common/autoconf/toolchain.m4	2015-09-21 16:00:30.328673989 +0200
-@@ -361,6 +361,7 @@
-   # Option used to tell the compiler whether to create 32- or 64-bit executables
-   # Notice that CC contains the full compiler path at this point.
-   case $CC in
-+    *x32-*) COMPILER_TARGET_BITS_FLAG="-mx";;
-     *xlc_r) COMPILER_TARGET_BITS_FLAG="-q";;
-     *)      COMPILER_TARGET_BITS_FLAG="-m";;
-   esac
-
-
---- jdk8u-jdk8u92-b31/jdk/src/share/native/com/sun/java/util/jar/pack/unpack.cpp.orig	2016-07-29 15:08:03.457784497 +0200
-+++ jdk8u-jdk8u92-b31/jdk/src/share/native/com/sun/java/util/jar/pack/unpack.cpp	2016-07-29 15:10:09.380999329 +0200
-@@ -34,7 +34,7 @@
-  * _LP64 can be explicitly set (used on Linux).
+   SIZER_CFLAGS := \
+       -I$(JDK_TOPDIR)/src/java.base/share/native/include \
+diff -urN jdk9u-jdk-9.0.4+12.orig/jdk/src/jdk.pack/share/native/common-unpack/unpack.cpp jdk9u-jdk-9.0.4+12/jdk/src/jdk.pack/share/native/common-unpack/unpack.cpp
+--- jdk9u-jdk-9.0.4+12.orig/jdk/src/jdk.pack/share/native/common-unpack/unpack.cpp	2018-01-13 03:07:38.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/jdk/src/jdk.pack/share/native/common-unpack/unpack.cpp	2020-08-29 23:59:35.900292250 +0200
+@@ -37,7 +37,7 @@
   * Solaris compilers will define __sparcv9 or __x86_64 on 64bit compilations.
   */
--#if defined(_LP64) || defined(__sparcv9) || defined(__x86_64)
-+#if defined(_LP64) || defined(__sparcv9) || (defined(__x86_64) && !defined(__ILP32__))
+ #if !defined (_MSC_VER) && \
+-    (defined(_LP64) || defined(__sparcv9) || defined(__x86_64))
++    (defined(_LP64) || defined(__sparcv9) || defined(__x86_64) && !defined(__ILP32__))
    #define LONG_LONG_FORMAT "%ld"
    #define LONG_LONG_HEX_FORMAT "%lx"
  #else
