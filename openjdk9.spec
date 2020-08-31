@@ -11,6 +11,10 @@
 %define		with_aot	1
 %endif
 
+%ifarch x32
+%define		with_zero	1
+%endif
+
 # class data version seen with file(1) that this jvm is able to load
 %define		_classdataversion 53.0
 
@@ -427,9 +431,7 @@ chmod a+x configure
 
 # disable-debug-symbols so openjdk debuginfo handling won't conflict with ours
 %configure \
-%ifarch x32
-	--with-jvm-variants=zero \
-%endif
+	%{?with_zero:--with-jvm-variants=zero} \
 	--with-boot-jdk="%{java_home}" \
 	--with-extra-cflags="%{rpmcppflags} %{rpmcflags} -fcommon -fno-tree-dse" \
 	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags} -fcommon -fno-tree-dse" \
@@ -532,7 +534,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jdb
 %attr(755,root,root) %{_bindir}/jdeprscan
 %attr(755,root,root) %{_bindir}/jdeps
-%attr(755,root,root) %{_bindir}/jhsdb
+%{!?with_zero:%attr(755,root,root) %{_bindir}/jhsdb}
 %attr(755,root,root) %{_bindir}/jimage
 %attr(755,root,root) %{_bindir}/jinfo
 %attr(755,root,root) %{_bindir}/jlink
@@ -610,7 +612,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jdb
 %attr(755,root,root) %{dstdir}/bin/jdeprscan
 %attr(755,root,root) %{dstdir}/bin/jdeps
-%attr(755,root,root) %{dstdir}/bin/jhsdb
+%{!?with_zero:%attr(755,root,root) %{dstdir}/bin/jhsdb}
 %attr(755,root,root) %{dstdir}/bin/jimage
 %attr(755,root,root) %{dstdir}/bin/jinfo
 %attr(755,root,root) %{dstdir}/bin/jlink
@@ -729,9 +731,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libmlib_image.so
 %attr(755,root,root) %{dstdir}/lib/libnet.so
 %attr(755,root,root) %{dstdir}/lib/libnio.so
-%ifnarch x32
-%attr(755,root,root) %{dstdir}/lib/libsaproc.so
-%endif
+%{!?with_zero:%attr(755,root,root) %{dstdir}/lib/libsaproc.so}
 %{?with_sunec:%attr(755,root,root) %{dstdir}/lib/libsunec.so}
 %attr(755,root,root) %{dstdir}/lib/libunpack.so
 %attr(755,root,root) %{dstdir}/lib/libverify.so
