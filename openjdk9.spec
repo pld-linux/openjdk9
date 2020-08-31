@@ -435,6 +435,7 @@ chmod a+x configure
 	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags} -fcommon -fno-tree-dse" \
 	--with-extra-ldflags="%{rpmldflags}" \
 	--with-native-debug-symbols=none \
+	--disable-full-docs \
 	--disable-javac-server \
 	--disable-hotspot-gtest \
 	--disable-warnings-as-errors \
