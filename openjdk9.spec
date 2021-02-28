@@ -369,9 +369,7 @@ i został zbudowany wyłącznie przy użyciu wolnego oprogramowania.
 Summary:	OpenJDK - sources
 Summary(pl.UTF-8):	OpenJDK - kod źródłowy
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description jdk-sources
 Source code for the OpenJDK development kit and Java standard library.
@@ -384,9 +382,7 @@ biblioteki Javy.
 Summary:	OpenJDK - examples
 Summary(pl.UTF-8):	OpenJDK - przykłady
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description examples
 Code examples for OpenJDK.
