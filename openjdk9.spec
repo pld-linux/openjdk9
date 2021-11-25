@@ -28,7 +28,7 @@ Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 9 SE
 Name:		openjdk9
 Version:	%{ver_u}.%{ver_b}
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://hg.openjdk.java.net/jdk-updates/jdk9u/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-%{version}.tar.bz2
@@ -52,6 +52,7 @@ Patch0:		libpath.patch
 Patch1:		make-4.3.patch
 Patch2:		x32.patch
 Patch3:		aarch64.patch
+Patch4:		default-assumemp.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -207,19 +208,20 @@ Provides:	java1.4
 Provides:	jre = %{_jdkversion}
 Obsoletes:	icedtea6-jre
 Obsoletes:	icedtea7-jre
-Obsoletes:	java(jaas)
-Obsoletes:	java(jaf)
-Obsoletes:	java(jaxp)
-Obsoletes:	java(jce)
-Obsoletes:	java(jdbc-stdext)
-Obsoletes:	java(jdbc-stdext)
-Obsoletes:	java(jmx)
-Obsoletes:	java(jndi)
-Obsoletes:	java(jsse)
-Obsoletes:	java-gcj-compat
-Obsoletes:	java-sun-jre
+Obsoletes:	icedtea8-jre
+Obsoletes:	jaas
+Obsoletes:	jaf
 Obsoletes:	java5-sun-jre
+Obsoletes:	java-gcj-compat
+Obsoletes:	java-jaxp
+Obsoletes:	java-jdbc-stdext
+Obsoletes:	java-sun-jre
+Obsoletes:	jce
+Obsoletes:	jdbc-stdext
+Obsoletes:	jmx
+Obsoletes:	jndi
 Obsoletes:	jre
+Obsoletes:	jsse
 Obsoletes:	oracle-java7-jre
 
 %description jre
@@ -403,6 +405,7 @@ done
 %ifarch aarch64
 %patch3 -p1
 %endif
+%patch4 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
