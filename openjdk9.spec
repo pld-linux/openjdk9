@@ -28,7 +28,7 @@ Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 9 SE
 Name:		openjdk9
 Version:	%{ver_u}.%{ver_b}
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://hg.openjdk.java.net/jdk-updates/jdk9u/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-%{version}.tar.bz2
