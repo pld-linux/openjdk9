@@ -2,7 +2,7 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	icedtea8
+%define		use_jdk	openjdk8
 %else
 %define		use_jdk	openjdk9
 %endif
