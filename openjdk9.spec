@@ -53,6 +53,7 @@ Patch1:		make-4.3.patch
 Patch2:		x32.patch
 Patch3:		aarch64.patch
 Patch4:		default-assumemp.patch
+Patch5:		glibc-2.34.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -407,6 +408,7 @@ done
 %patch3 -p1
 %endif
 %patch4 -p1
+%patch5 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
