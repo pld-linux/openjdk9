@@ -73,6 +73,7 @@ BuildRequires:	libpng-devel
 BuildRequires:	lsb-release
 BuildRequires:	pcsc-lite-devel
 BuildRequires:	pkgconfig
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.557
 BuildRequires:	unzip
 BuildRequires:	util-linux
