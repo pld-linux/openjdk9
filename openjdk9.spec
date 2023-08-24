@@ -1,3 +1,5 @@
+#
+# Conditional build:
 %bcond_with	bootstrap	# build a bootstrap version, using icedtea6
 %bcond_without	cacerts		# don't include the default CA certificates
 
