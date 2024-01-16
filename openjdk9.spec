@@ -323,18 +323,6 @@ software only.
 Biblioteki obsługi czcionek dla OpenJDK zbudowane wyłącznie przy
 użyciu wolnego oprogramowania.
 
-%package jre-base-gtk
-Summary:	OpenJDK - runtime environment - GTK support
-Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa GTK
-Group:		Development/Languages/Java
-Requires:	%{name}-jre-base = %{version}-%{release}
-
-%description jre-base-gtk
-GTK support for OpenJDK runtime environment.
-
-%description jre-base-gtk -l pl.UTF-8
-Biblioteki GTK dla OpenJDK.
-
 %package jar
 Summary:	OpenJDK - JAR tool
 Summary(pl.UTF-8):	OpenJDK - narzędzie JAR
@@ -514,7 +502,7 @@ rmdir $RPM_BUILD_ROOT%{dstdir}/man
 # replace duplicates with symlinks, link to %{_bindir}
 for path in $RPM_BUILD_ROOT%{dstdir}/bin/*; do
 	filename=$(basename $path)
-        ln -sf "%{dstdir}/bin/$filename" $RPM_BUILD_ROOT%{_bindir}
+	ln -sf "%{dstdir}/bin/$filename" $RPM_BUILD_ROOT%{_bindir}
 done
 
 # keep configuration in %{_sysconfdir} (not all *.properties go there)
