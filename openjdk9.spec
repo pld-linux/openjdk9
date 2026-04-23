@@ -200,21 +200,7 @@ Summary:	OpenJDK - runtime environment
 Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
-Requires:	nss >= 1:3.13.4
-# Require zoneinfo data provided by java-tzdata subpackage.
-Requires:	java-tzdata
 Provides:	java
-Provides:	java(ClassDataVersion) = %{_classdataversion}
-Provides:	java(jaas) = %{version}
-Provides:	java(jaf) = 1.1.1
-Provides:	java(jaxp) = 1.3
-Provides:	java(jaxp_parser_impl)
-Provides:	java(jce) = %{version}
-Provides:	java(jdbc-stdext) = %{version}
-Provides:	java(jdbc-stdext) = 3.0
-Provides:	java(jmx) = 1.4
-Provides:	java(jndi) = %{version}
-Provides:	java(jsse) = %{version}
 Provides:	java1.4
 Provides:	jre = %{_jdkversion}
 Obsoletes:	icedtea6-jre
@@ -271,6 +257,20 @@ Summary:	OpenJDK - runtime environment
 Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe
 Group:		Development/Languages/Java
 Requires:	jpackage-utils >= 0:1.7.5-8
+Requires:	nss >= 1:3.13.4
+# Require zoneinfo data provided by java-tzdata subpackage.
+Requires:	java-tzdata
+Provides:	java(ClassDataVersion) = %{_classdataversion}
+Provides:	java(jaas) = %{version}
+Provides:	java(jaf) = 1.1.1
+Provides:	java(jaxp) = 1.3
+Provides:	java(jaxp_parser_impl)
+Provides:	java(jce) = %{version}
+Provides:	java(jdbc-stdext) = %{version}
+Provides:	java(jdbc-stdext) = 3.0
+Provides:	java(jmx) = 1.4
+Provides:	java(jndi) = %{version}
+Provides:	java(jsse) = %{version}
 Provides:	jre(%{name})
 
 %description jre-base
