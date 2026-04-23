@@ -260,6 +260,7 @@ Requires:	jpackage-utils >= 0:1.7.5-8
 Requires:	nss >= 1:3.13.4
 # Require zoneinfo data provided by java-tzdata subpackage.
 Requires:	java-tzdata
+Recommends:	%{name}-jre = %{version}-%{release}
 Provides:	java(ClassDataVersion) = %{_classdataversion}
 Provides:	java(jaas) = %{version}
 Provides:	java(jaf) = 1.1.1
