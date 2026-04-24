@@ -288,6 +288,7 @@ Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa X11
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	%{name}-jre-base-freetype = %{version}-%{release}
+Recommends:	%{name}-jre-X11 = %{version}-%{release}
 
 %description jre-base-X11
 X11 support for OpenJDK runtime environment built using free software
