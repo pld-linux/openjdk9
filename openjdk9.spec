@@ -187,6 +187,7 @@ Summary(pl.UTF-8):	Kod OpenJDK - środowisko programistyczne
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	jpackage-utils >= 0:1.7.5-8
+Recommends:	%{name}-jdk = %{version}-%{release}
 Provides:	jdk(%{name})
 
 %description jdk-base
