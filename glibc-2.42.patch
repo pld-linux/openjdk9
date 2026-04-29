@@ -1,0 +1,91 @@
+--- jdk9u-jdk-9.0.4+12/hotspot/src/cpu/aarch64/vm/macroAssembler_aarch64.cpp.orig	2018-01-22 16:19:02.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/hotspot/src/cpu/aarch64/vm/macroAssembler_aarch64.cpp	2026-04-29 14:38:19.351497621 +0200
+@@ -2028,7 +2028,7 @@
+   if (operand_valid_for_add_sub_immediate((int)imm)) {
+     (this->*insn1)(Rd, Rn, imm);
+   } else {
+-    if (uabs(imm) < (1 << 24)) {
++    if (g_uabs(imm) < (1 << 24)) {
+        (this->*insn1)(Rd, Rn, imm & -(1 << 12));
+        (this->*insn1)(Rd, Rd, imm & ((1 << 12)-1));
+     } else {
+--- jdk9u-jdk-9.0.4+12/hotspot/src/cpu/aarch64/vm/assembler_aarch64.cpp.orig	2018-01-22 16:19:02.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/hotspot/src/cpu/aarch64/vm/assembler_aarch64.cpp	2026-04-29 14:39:00.566939743 +0200
+@@ -1426,7 +1426,7 @@
+ 
+ bool Assembler::operand_valid_for_add_sub_immediate(long imm) {
+   bool shift = false;
+-  unsigned long uimm = uabs(imm);
++  unsigned long uimm = g_uabs(imm);
+   if (uimm < (1 << 12))
+     return true;
+   if (uimm < (1 << 24)
+--- jdk9u-jdk-9.0.4+12/hotspot/src/cpu/aarch64/vm/assembler_aarch64.hpp.orig	2018-01-22 16:19:02.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/hotspot/src/cpu/aarch64/vm/assembler_aarch64.hpp	2026-04-29 14:39:51.392097453 +0200
+@@ -316,7 +316,7 @@
+ 
+ // abs methods which cannot overflow and so are well-defined across
+ // the entire domain of integer types.
+-static inline unsigned int uabs(unsigned int n) {
++static inline unsigned int g_uabs(unsigned int n) {
+   union {
+     unsigned int result;
+     int value;
+@@ -325,7 +325,7 @@
+   if (value < 0) result = -result;
+   return result;
+ }
+-static inline unsigned long uabs(unsigned long n) {
++static inline unsigned long g_uabs(unsigned long n) {
+   union {
+     unsigned long result;
+     long value;
+@@ -334,8 +334,8 @@
+   if (value < 0) result = -result;
+   return result;
+ }
+-static inline unsigned long uabs(long n) { return uabs((unsigned long)n); }
+-static inline unsigned long uabs(int n) { return uabs((unsigned int)n); }
++static inline unsigned long g_uabs(long n) { return g_uabs((unsigned long)n); }
++static inline unsigned long g_uabs(int n) { return g_uabs((unsigned int)n); }
+ 
+ // Addressing modes
+ class Address VALUE_OBJ_CLASS_SPEC {
+@@ -575,7 +575,7 @@
+   static bool offset_ok_for_immed(long offset, int shift = 0) {
+     unsigned mask = (1 << shift) - 1;
+     if (offset < 0 || offset & mask) {
+-      return (uabs(offset) < (1 << (20 - 12))); // Unscaled offset
++      return (g_uabs(offset) < (1 << (20 - 12))); // Unscaled offset
+     } else {
+       return ((offset >> shift) < (1 << (21 - 10 + 1))); // Scaled, unsigned offset
+     }
+@@ -851,7 +851,7 @@
+   static const unsigned long branch_range = INCLUDE_JVMCI ? 128 * M : NOT_DEBUG(128 * M) DEBUG_ONLY(2 * M);
+ 
+   static bool reachable_from_branch_at(address branch, address target) {
+-    return uabs(target - branch) < branch_range;
++    return g_uabs(target - branch) < branch_range;
+   }
+ 
+   // Unconditional branch (immediate)
+--- jdk9u-jdk-9.0.4+12/hotspot/src/cpu/aarch64/vm/stubGenerator_aarch64.cpp.orig	2018-01-22 16:19:02.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/hotspot/src/cpu/aarch64/vm/stubGenerator_aarch64.cpp	2026-04-29 14:40:14.614741699 +0200
+@@ -1108,7 +1108,7 @@
+ 
+   void copy_memory_small(Register s, Register d, Register count, Register tmp, int step) {
+     bool is_backwards = step < 0;
+-    size_t granularity = uabs(step);
++    size_t granularity = g_uabs(step);
+     int direction = is_backwards ? -1 : 1;
+     int unit = wordSize * direction;
+ 
+@@ -1164,7 +1164,7 @@
+                    Register count, Register tmp, int step) {
+     copy_direction direction = step < 0 ? copy_backwards : copy_forwards;
+     bool is_backwards = step < 0;
+-    int granularity = uabs(step);
++    int granularity = g_uabs(step);
+     const Register t0 = r3, t1 = r4;
+ 
+     // <= 96 bytes do inline. Direction doesn't matter because we always
