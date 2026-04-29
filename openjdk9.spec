@@ -449,7 +449,7 @@ chmod a+x configure
 %configure \
 	%{?with_zero:--with-jvm-variants=zero} \
 	--with-boot-jdk="%{java_home}" \
-	--with-extra-cflags="%{rpmcppflags} %{rpmcflags} -fcommon -fno-tree-dse" \
+	--with-extra-cflags="%{rpmcppflags} %{rpmcflags} -fcommon -fno-tree-dse -std=gnu17" \
 	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags} -fcommon -fno-tree-dse" \
 	--with-extra-ldflags="%{rpmldflags}" \
 	--with-native-debug-symbols=none \
