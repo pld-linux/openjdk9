@@ -58,6 +58,7 @@ Patch4:		default-assumemp.patch
 Patch5:		glibc-2.34.patch
 Patch6:		gcc11.patch
 Patch7:		glibc-2.42.patch
+Patch8:		currency-data.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	alsa-lib-devel
 BuildRequires:	ant
@@ -421,6 +422,7 @@ done
 %patch -P5 -p1
 %patch -P6 -p1
 %patch -P7 -p1
+%patch -P8 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
