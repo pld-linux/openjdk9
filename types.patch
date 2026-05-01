@@ -17,3 +17,33 @@
      (*fp_g_object_get)(settings, key, &intval, NULL);
      return create_Boolean(env, intval);
  }
+--- jdk9u-jdk-9.0.4+12/hotspot/src/jdk.aot/unix/native/libjelfshim/jdk_tools_jaotc_jnilibelf_JNILibELFAPI.c.orig	2018-01-22 16:19:02.000000000 +0100
++++ jdk9u-jdk-9.0.4+12/hotspot/src/jdk.aot/unix/native/libjelfshim/jdk_tools_jaotc_jnilibelf_JNILibELFAPI.c	2026-05-01 21:49:44.827032351 +0200
+@@ -258,11 +258,11 @@
+ 
+ JNIEXPORT jobject JNICALL Java_jdk_tools_jaotc_jnilibelf_JNILibELFAPI_gelf_1newehdr
+ (JNIEnv* env, jclass UNUSED(c), jobject ptrObj, jint elfClass) {
+-   unsigned long int retPtr = 0;
++   void* retPtr = NULL;
+    jlong addr = getNativeAddress(env, ptrObj);
+    if (addr != -1) {
+        // Call libelf function
+-       if ((retPtr = gelf_newehdr((Elf*) addr, elfClass)) == 0) {
++       if ((retPtr = gelf_newehdr((Elf*) addr, elfClass)) == NULL) {
+            errx(EX_SOFTWARE, "gelf_newehdr() failed: %s.", elf_errmsg(-1));
+        }
+    } else {
+@@ -273,11 +273,11 @@
+ 
+ JNIEXPORT jobject JNICALL Java_jdk_tools_jaotc_jnilibelf_JNILibELFAPI_gelf_1newphdr
+ (JNIEnv* env, jclass UNUSED(c), jobject ptrObj, jint phnum) {
+-   unsigned long int retPtr = 0;
++   void* retPtr = NULL;
+    jlong addr = getNativeAddress(env, ptrObj);
+    if (addr != -1) {
+        // Call libelf function
+-       if ((retPtr = gelf_newphdr((Elf*) addr, phnum)) == 0) {
++       if ((retPtr = gelf_newphdr((Elf*) addr, phnum)) == NULL) {
+            errx(EX_SOFTWARE, "gelf_newphdr() failed: %s.", elf_errmsg(-1));
+        }
+    } else {
