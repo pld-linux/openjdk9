@@ -62,7 +62,6 @@ Patch8:		currency-data.patch
 Patch9:		types.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	alsa-lib-devel
-BuildRequires:	ant
 BuildRequires:	autoconf
 BuildRequires:	bash
 %{?with_cacerts:BuildRequires:	ca-certificates-update}
